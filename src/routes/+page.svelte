@@ -12,6 +12,8 @@
 	let darkMode = $state(false);
 	let brokenLogoIds = $state(new Set<number>());
 	let editMode = $state(false);
+	const editModeStorageKey = 'ref-baily-edit-mode';
+	const adminEditMode = $derived(Boolean(data.loggedIn && editMode));
 	let showLogin = $state(false);
 	let showUserPanel = $state(false);
 	let userMode = $state<'login' | 'register'>('login');
@@ -137,6 +139,17 @@
 		addEditorTag();
 	}
 
+	function setAdminEditMode(next: boolean) {
+		editMode = next;
+		if (typeof sessionStorage === 'undefined') return;
+
+		if (next && data.loggedIn) {
+			sessionStorage.setItem(editModeStorageKey, '1');
+		} else {
+			sessionStorage.removeItem(editModeStorageKey);
+		}
+	}
+
 	function reminderText(site: Site) {
 		return site.desc.trim();
 	}
@@ -212,6 +225,18 @@
 			document.body.classList.toggle('dark', darkMode);
 		}
 	});
+
+	$effect(() => {
+		if (typeof sessionStorage === 'undefined') return;
+
+		if (!data.loggedIn) {
+			sessionStorage.removeItem(editModeStorageKey);
+			editMode = false;
+			return;
+		}
+
+		editMode = sessionStorage.getItem(editModeStorageKey) === '1';
+	});
 </script>
 
 <svelte:head>
@@ -247,11 +272,11 @@
 			{#if data.loggedIn}
 				<button type="button" class="nav-button" onclick={() => openCreateSite()}>新增推荐</button>
 				<button type="button" class="nav-button" onclick={() => (showCategoryEditor = true)}>新分类</button>
-				<button type="button" class="nav-button" class:active={editMode} onclick={() => (editMode = !editMode)}>
-					{editMode ? '完成' : '编辑'}
+				<button type="button" class="nav-button" class:active={adminEditMode} onclick={() => setAdminEditMode(!adminEditMode)}>
+					{adminEditMode ? '完成' : '编辑'}
 				</button>
 				<form method="POST" action="?/logout">
-					<button class="nav-button">退出</button>
+					<button class="nav-button" onclick={() => setAdminEditMode(false)}>退出</button>
 				</form>
 			{:else}
 				<button type="button" class="nav-button" onclick={() => (showLogin = true)}>管理</button>
@@ -359,8 +384,8 @@
 			{:else}
 				<div class="site-grid">
 					{#each visibleSites as site}
-						<article class="site-card" class:editing={editMode}>
-							{#if !editMode}
+						<article class="site-card" class:editing={adminEditMode}>
+							{#if !adminEditMode}
 								<a class="card-link" href={normalizeUrl(site.url)} target="_blank" rel="noreferrer" aria-label={site.name} onclick={(event) => openWithReminder(event, site)}></a>
 							{/if}
 							<div class="site-logo">
@@ -388,7 +413,7 @@
 									{/if}
 								</div>
 							</div>
-							{#if editMode}
+							{#if adminEditMode}
 								<div class="card-actions">
 									<button type="button" onclick={() => openEditSite(site)}>编辑</button>
 									<form method="POST" action="?/removeSite">
