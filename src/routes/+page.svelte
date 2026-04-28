@@ -35,6 +35,27 @@
 		hidden: false
 	});
 
+	const wechatQr = '/wechat-qrcode.jpg';
+
+	const footerNotes = [
+		{
+			id: 'usage-note',
+			label: '使用说明'
+		},
+		{
+			id: 'privacy-note',
+			label: '隐私保护'
+		},
+		{
+			id: 'disclaimer-note',
+			label: '免责声明'
+		},
+		{
+			id: 'update-note',
+			label: '更新反馈'
+		}
+	];
+
 	const visibleSites = $derived(
 		sites.filter((site) => {
 			const keyword = query.trim().toLowerCase();
@@ -373,6 +394,23 @@
 					+ 新增分类
 				</button>
 			{/if}
+			<div class="wechat-card" aria-label="关注公众号贝利说TV">
+				<div class="wechat-qr" aria-hidden="true">
+					{#if wechatQr}
+						<img src={wechatQr} alt="" loading="lazy" />
+					{:else}
+						<span></span>
+						<span></span>
+						<span></span>
+						<small>QR</small>
+					{/if}
+				</div>
+				<div>
+					<p>微信公众号</p>
+					<h3>贝利说TV</h3>
+					<span>欢迎微信搜索关注，一起了解更多实用信息和最新内容。</span>
+				</div>
+			</div>
 		</aside>
 
 		<section class="results" aria-live="polite">
@@ -440,6 +478,15 @@
 				</div>
 			{/if}
 		</section>
+	</section>
+
+	<section class="site-notes" aria-label="网站说明">
+		<footer class="site-footer">
+			{#each footerNotes as note}
+				<a href={'#' + note.id}>{note.label}</a>
+			{/each}
+			<a href="https://www.baily.life" target="_blank" rel="noreferrer">baily.life</a>
+		</footer>
 	</section>
 
 	{#if showLogin}
@@ -1086,6 +1133,104 @@
 		color: rgba(255, 255, 255, 0.68);
 	}
 
+	.wechat-card {
+		display: grid;
+		grid-template-columns: 76px minmax(0, 1fr);
+		align-items: center;
+		gap: 14px;
+		margin-top: 8px;
+		border: 1px solid rgba(37, 99, 235, 0.12);
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.68);
+		padding: 14px;
+		box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+	}
+
+	.wechat-qr {
+		position: relative;
+		display: block;
+		height: 76px;
+		width: 76px;
+		border-radius: 8px;
+		background:
+			linear-gradient(90deg, #111827 8px, transparent 8px 15px) 11px 11px / 22px 22px,
+			linear-gradient(#111827 8px, transparent 8px 15px) 11px 11px / 22px 22px,
+			linear-gradient(90deg, transparent 51px, #111827 51px 59px, transparent 59px) 0 0 / 76px 76px,
+			linear-gradient(transparent 51px, #111827 51px 59px, transparent 59px) 0 0 / 76px 76px,
+			#ffffff;
+		box-shadow:
+			inset 0 0 0 7px #ffffff,
+			inset 0 0 0 7px rgba(15, 23, 42, 0.1);
+		overflow: hidden;
+	}
+
+	.wechat-qr img {
+		display: block;
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+	}
+
+	.wechat-qr span {
+		position: absolute;
+		height: 20px;
+		width: 20px;
+		border: 5px solid #111827;
+		border-radius: 4px;
+	}
+
+	.wechat-qr span:nth-child(1) {
+		top: 11px;
+		left: 11px;
+	}
+
+	.wechat-qr span:nth-child(2) {
+		top: 11px;
+		right: 11px;
+	}
+
+	.wechat-qr span:nth-child(3) {
+		bottom: 11px;
+		left: 11px;
+	}
+
+	.wechat-qr small {
+		position: absolute;
+		right: 9px;
+		bottom: 9px;
+		color: #2563eb;
+		font-size: 10px;
+		font-weight: 900;
+		letter-spacing: 0;
+	}
+
+	.wechat-card p,
+	.wechat-card h3,
+	.wechat-card span {
+		margin: 0;
+	}
+
+	.wechat-card p {
+		color: #2563eb;
+		font-size: 12px;
+		font-weight: 850;
+	}
+
+	.wechat-card h3 {
+		margin-top: 4px;
+		color: #111827;
+		font-size: 24px;
+		line-height: 1.1;
+	}
+
+	.wechat-card span {
+		display: block;
+		margin-top: 7px;
+		color: #64748b;
+		font-size: 13px;
+		line-height: 1.45;
+	}
+
 	.results {
 		min-width: 0;
 	}
@@ -1310,6 +1455,35 @@
 		border-radius: 8px;
 		background: rgba(255, 255, 255, 0.56);
 		padding: 28px;
+	}
+
+	.site-notes {
+		margin: 24px auto 0;
+		max-width: 1180px;
+		border-top: 1px solid rgba(15, 23, 42, 0.08);
+		padding: 13px 0 4px;
+	}
+
+	.site-footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 14px;
+		align-items: center;
+		justify-content: center;
+		color: #64748b;
+		font-size: 12px;
+	}
+
+	.site-footer a {
+		color: #475569;
+		font-weight: 650;
+		text-decoration: none;
+	}
+
+	.site-footer a:hover {
+		color: #111827;
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
 
 	.auth-page-backdrop {
@@ -1972,6 +2146,37 @@
 	:global(body.dark) .site-logo {
 		background: #1e293b;
 		color: #bfdbfe;
+	}
+
+	:global(body.dark) .wechat-card {
+		border-color: rgba(226, 232, 240, 0.1);
+		background: rgba(15, 23, 42, 0.62);
+	}
+
+	:global(body.dark) .wechat-qr {
+		background:
+			linear-gradient(90deg, #111827 7px, transparent 7px 13px) 9px 9px / 18px 18px,
+			linear-gradient(#111827 7px, transparent 7px 13px) 9px 9px / 18px 18px,
+			linear-gradient(90deg, transparent 38px, #111827 38px 45px, transparent 45px) 0 0 / 58px 58px,
+			linear-gradient(transparent 38px, #111827 38px 45px, transparent 45px) 0 0 / 58px 58px,
+			#e5e7eb;
+		box-shadow:
+			inset 0 0 0 6px #e5e7eb,
+			inset 0 0 0 7px rgba(226, 232, 240, 0.18);
+	}
+
+	:global(body.dark) .wechat-card h3,
+	:global(body.dark) .site-footer a:hover {
+		color: #e5e7eb;
+	}
+
+	:global(body.dark) .wechat-card span,
+	:global(body.dark) .site-footer {
+		color: #94a3b8;
+	}
+
+	:global(body.dark) .site-notes {
+		border-color: rgba(226, 232, 240, 0.1);
 	}
 
 	:global(body.dark) .site-meta span,
