@@ -1,13 +1,13 @@
-name = "ref-baily-life"
+name = "ref-y1der"
 compatibility_date = "2026-04-25"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "ref-baily-life"
+database_name = "ref-y1der"
 database_id = "2cb992e6-09ea-47cb-ba42-acc186553df4"
 
 [vars]
 APP_URL = "https://refer.yhxder.top"
-CRM_API_BASE = "https://crm.baily.life"
+CRM_API_BASE = "https://crm.y1der"

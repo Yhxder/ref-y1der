@@ -1,10 +1,10 @@
-# 贝利推荐 / ref.baily.life
+# 贝利推荐 / refer.yhxder.top
 
 一个部署在 Cloudflare 上的个人推荐导航站，用来集中整理返现购物、银行开户、信用卡申请、券商交易、支付汇款、eSIM、旅行理赔和数字服务等常用入口。
 
-项目地址：[https://ref.baily.life](https://ref.baily.life)
+项目地址：[https://refer.yhxder.top](https://refer.yhxder.top)
 
-开源地址：[https://github.com/bailylu/ref-baily-life](https://github.com/bailylu/ref-baily-life)
+开源地址：[https://github.com/y1der/ref-y1der](https://github.com/y1der/ref-y1der)
 
 ## 项目特点
 
@@ -123,15 +123,15 @@
 ### 2. Fork 或克隆项目
 
 ```bash
-git clone https://github.com/bailylu/ref-baily-life.git
-cd ref-baily-life
+git clone https://github.com/y1der/ref-y1der.git
+cd ref-y1der
 npm install
 ```
 
 ### 3. 创建 D1 数据库
 
 ```bash
-npx wrangler d1 create ref-baily-life
+npx wrangler d1 create ref-y1der
 ```
 
 命令会返回一个 `database_id`，把它填入 `wrangler.toml`：
@@ -139,7 +139,7 @@ npx wrangler d1 create ref-baily-life
 ```toml
 [[d1_databases]]
 binding = "DB"
-database_name = "ref-baily-life"
+database_name = "ref-y1der"
 database_id = "你的 database_id"
 ```
 
@@ -150,13 +150,13 @@ database_id = "你的 database_id"
 本地开发数据库：
 
 ```bash
-npx wrangler d1 migrations apply ref-baily-life --local
+npx wrangler d1 migrations apply ref-y1der --local
 ```
 
 Cloudflare 线上数据库：
 
 ```bash
-npx wrangler d1 migrations apply ref-baily-life --remote
+npx wrangler d1 migrations apply ref-y1der --remote
 ```
 
 迁移文件会创建推荐表、分类表、用户表，并导入一份初始示例数据。
@@ -214,7 +214,7 @@ npm run build
 手动部署：
 
 ```bash
-npx wrangler pages deploy .svelte-kit/cloudflare --project-name ref-baily-life --branch main
+npx wrangler pages deploy .svelte-kit/cloudflare --project-name ref-y1der --branch main
 ```
 
 如果你在 Cloudflare Pages 里连接 GitHub 仓库，可以使用：
@@ -265,7 +265,7 @@ npx wrangler pages deploy .svelte-kit/cloudflare --project-name ref-baily-life -
 
 ```text
 请帮我基于这个开源项目部署一个自己的推荐导航站：
-https://github.com/bailylu/ref-baily-life
+https://github.com/y1der/ref-y1der
 
 目标：
 1. 复制/克隆项目并安装依赖。
@@ -346,6 +346,6 @@ https://github.com/bailylu/ref-baily-life
 
 项目仓库：
 
-[https://github.com/bailylu/ref-baily-life](https://github.com/bailylu/ref-baily-life)
+[https://github.com/y1der/ref-y1der](https://github.com/y1der/ref-y1der)
 
 欢迎参考、Fork、二次开发或改成自己的推荐导航站。
