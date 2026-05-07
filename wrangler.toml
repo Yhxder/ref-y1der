@@ -6,7 +6,7 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 [[d1_databases]]
 binding = "DB"
 database_name = "ref-baily-life"
-database_id = "d3f9e267-0012-4b2e-80fa-6b1459881ac6"
+database_id = "2cb992e6-09ea-47cb-ba42-acc186553df4"
 
 [vars]
 APP_URL = "https://ref.baily.life"
