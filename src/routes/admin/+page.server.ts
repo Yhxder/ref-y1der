@@ -1,6 +1,7 @@
 import { categoryNames, type CategoryName } from '$lib/ref-data';
 import { clearAdminCookie, isAdmin, setAdminCookie } from '$lib/server/auth';
-import { dbFromPlatform, listAdminSites } from '$lib/server/db';
+import { dbFromPlatform, listPublicSites } from '$lib/server/db';
+import { currentRefUser, publicUser } from '$lib/server/user-auth';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -39,13 +40,16 @@ function requireDb(platform: App.Platform | undefined) {
 }
 
 export const load: PageServerLoad = async ({ cookies, platform }) => {
+	const db = dbFromPlatform(platform);
 	const loggedIn = await isAdmin(cookies, platform?.env);
+	const publicData = await listPublicSites(db, { includeHidden: loggedIn });
+	const user = await currentRefUser(cookies, db, platform?.env);
 	return {
+		...publicData,
 		loggedIn,
+		user: publicUser(user),
 		configured: Boolean(platform?.env?.ADMIN_PASSWORD),
-		hasDb: Boolean(dbFromPlatform(platform)),
-		categories: categoryNames,
-		sites: loggedIn ? await listAdminSites(dbFromPlatform(platform)) : []
+		hasDb: Boolean(db)
 	};
 };
 
