@@ -11,6 +11,17 @@
 	let activeCategory = $state('全部');
 	let darkMode = $state(false);
 	let brokenLogoIds = $state(new Set<number>());
+	let copiedSiteId = $state<number | null>(null);
+
+	function copyLink(event: MouseEvent, site: Site) {
+		event.preventDefault();
+		event.stopPropagation();
+		const url = normalizeUrl(site.url);
+		navigator.clipboard.writeText(url).then(() => {
+			copiedSiteId = site.id;
+			setTimeout(() => { copiedSiteId = null; }, 1800);
+		});
+	}
 	let editMode = $state(false);
 	const editModeStorageKey = 'ref-baily-edit-mode';
 	const adminEditMode = $derived(Boolean(data.loggedIn && editMode));
@@ -462,6 +473,23 @@
 									{/if}
 								</div>
 							</div>
+							{#if !adminEditMode && hasUrl(site.url)}
+								<button
+									class="share-btn"
+									class:copied={copiedSiteId === site.id}
+									type="button"
+									aria-label="复制链接"
+									onclick={(e) => copyLink(e, site)}
+								>
+									{#if copiedSiteId === site.id}
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+										<span>已复制</span>
+									{:else}
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+										<span>分享</span>
+									{/if}
+								</button>
+							{/if}
 							{#if adminEditMode}
 								<div class="card-actions">
 									<button type="button" onclick={() => openEditSite(site)}>编辑</button>
@@ -1329,6 +1357,73 @@
 		border-radius: 8px;
 	}
 
+	.share-btn {
+		position: absolute;
+		bottom: 10px;
+		right: 10px;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		padding: 0 10px 0 8px;
+		height: 32px;
+		border: 1.5px solid rgba(37, 99, 235, 0.2);
+		border-radius: 999px;
+		background: rgba(239, 246, 255, 0.92);
+		color: #3b82f6;
+		font-size: 12px;
+		font-weight: 600;
+		cursor: pointer;
+		opacity: 0;
+		transform: translateY(4px) scale(0.93);
+		transition:
+			opacity 180ms ease,
+			transform 180ms ease,
+			background 160ms ease,
+			color 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+		backdrop-filter: blur(6px);
+		white-space: nowrap;
+		box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+	}
+
+	.share-btn span {
+		line-height: 1;
+	}
+
+	.site-card:hover .share-btn {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+
+	.share-btn:hover {
+		background: rgba(37, 99, 235, 0.12);
+		border-color: rgba(37, 99, 235, 0.45);
+		color: #1d4ed8;
+		box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+	}
+
+	.share-btn:active {
+		transform: scale(0.95) !important;
+	}
+
+	.share-btn.copied {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		background: rgba(16, 185, 129, 0.12);
+		border-color: rgba(16, 185, 129, 0.4);
+		color: #059669;
+		box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+	}
+
+	@media (hover: none) {
+		.share-btn {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+
 	.site-card:hover {
 		transform: translateY(-2px);
 		border-color: rgba(37, 99, 235, 0.38);
@@ -2074,6 +2169,25 @@
 		border-color: rgba(226, 232, 240, 0.1);
 		background: rgba(15, 23, 42, 0.74);
 		color: #e5e7eb;
+	}
+
+	:global(body.dark) .share-btn {
+		background: rgba(37, 99, 235, 0.15);
+		border-color: rgba(96, 165, 250, 0.25);
+		color: #93c5fd;
+	}
+
+	:global(body.dark) .share-btn:hover {
+		background: rgba(37, 99, 235, 0.28);
+		border-color: rgba(96, 165, 250, 0.45);
+		color: #bfdbfe;
+		box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+	}
+
+	:global(body.dark) .share-btn.copied {
+		background: rgba(16, 185, 129, 0.18);
+		border-color: rgba(52, 211, 153, 0.4);
+		color: #34d399;
 	}
 
 	:global(body.dark) .site-card.featured {
